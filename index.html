@@ -6,6 +6,8 @@
   <title>Doit — 흩어진 정보를 한 곳에</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <!-- Tally Embed -->
+  <script async src="https://tally.so/widgets/embed.js"></script>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2J9XRG1F0B"></script>
   <script>
@@ -645,7 +647,7 @@
     <a href="#" class="nav-logo">Doit</a>
     <div class="nav-right">
       <a href="#features" class="nav-link">기능</a>
-      <a href="#cta" class="btn-nav">얼리 액세스 신청 →</a>
+      <button class="btn-nav" onclick="openTally()">얼리 액세스 신청 →</button>
     </div>
   </nav>
 
@@ -655,7 +657,7 @@
     <h1>저장했는데,<br><em>왜 못 찾겠지?</em></h1>
     <p class="sub">인스타, 유튜브, X에서 본 좋은 정보들 — Doit 하나로 모으고, AI가 정리하고, 친구와 함께 쓰세요.</p>
     <div class="hero-ctas">
-      <a href="#cta" class="btn-primary">얼리 액세스 신청하기 →</a>
+      <button class="btn-primary" onclick="openTally()">얼리 액세스 신청하기 →</button>
       <a href="#features" class="btn-secondary">기능 살펴보기</a>
     </div>
 
@@ -1083,17 +1085,7 @@
       <span class="section-label" style="color:rgba(255,255,255,0.4);margin-bottom:20px;display:block;">Early Access</span>
       <h2>먼저 써볼 준비<br>됐나요?</h2>
       <p>지금 신청하면 출시 때 가장 먼저<br>초대장을 보내드려요.</p>
-      <form class="email-form" onsubmit="handleSubmit(event)">
-        <input
-          type="email"
-          class="email-input"
-          placeholder="이메일 주소를 입력하세요"
-          id="emailInput"
-          required
-        >
-        <button type="submit" class="btn-cta">얼리 액세스 신청 →</button>
-      </form>
-      <p class="cta-note" id="successMsg" style="display:none;color:#ff3b5c;font-weight:700;">✓ 신청 완료! 출시 소식을 가장 먼저 알려드릴게요 🎉</p>
+      <button class="btn-cta" onclick="openTally()">얼리 액세스 신청 →</button>
       <p class="cta-note">스팸은 절대 보내지 않아요. 출시 소식만 딱 한 번 드려요.</p>
     </div>
   </section>
@@ -1123,18 +1115,16 @@
 
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // Email form → Tally로 이메일 전달
-    function handleSubmit(e) {
-      e.preventDefault();
-      const email = document.getElementById('emailInput').value;
-      if (email) {
-        // GA 이벤트 기록
-        gtag('event', 'sign_up_click', {
-          event_category: 'CTA',
-          event_label: 'Early Access Form'
-        });
-        // 이메일 값을 Tally URL에 담아서 이동
-        window.location.href = 'https://tally.so/r/VL4oky?email=' + encodeURIComponent(email);
+    // Tally 팝업 열기
+    function openTally() {
+      gtag('event', 'sign_up_click', {
+        event_category: 'CTA',
+        event_label: 'Early Access Form'
+      });
+      if (typeof Tally !== 'undefined') {
+        Tally.openPopup('VL4oky', { layout: 'modal', width: 480 });
+      } else {
+        window.open('https://tally.so/r/VL4oky', '_blank');
       }
     }
 
