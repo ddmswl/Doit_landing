@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doit — 흩어진 정보를 한 곳에</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pink: #FF3B5C;
+      --pink-light: #FFF0F3;
+      --pink-border: #FFD0DA;
+      --orange: #FF6000;
+      --blue: #1D9BF0;
+      --black: #111111;
+      --gray-1: #444444;
+      --gray-2: #888888;
+      --gray-3: #CCCCCC;
+      --gray-4: #F4F4F4;
+      --white: #FFFFFF;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--black);
+      background: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(255,255,255,0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-size: 22px; font-weight: 900;
+      letter-spacing: -0.8px; color: var(--black);
+      text-decoration: none;
+    }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-link {
+      font-size: 15px; font-weight: 500; color: var(--gray-1);
+      text-decoration: none; transition: color .2s;
+    }
+    .nav-link:hover { color: var(--black); }
+    .btn-nav {
+      background: var(--black); color: var(--white);
+      padding: 10px 22px; border-radius: 100px;
+      font-size: 14px; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: opacity .2s, transform .2s;
+    }
+    .btn-nav:hover { opacity: 0.75; transform: translateY(-1px); }
+
+    /* ── SECTIONS COMMON ── */
+    section { width: 100%; }
+    .container {
+      max-width: 1160px; margin: 0 auto; padding: 0 24px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 140px 24px 80px;
+      background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px; border-radius: 50%;
+      background: radial-gradient(circle, #fff0f3 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--pink-light); color: var(--pink);
+      padding: 7px 16px; border-radius: 100px;
+      font-size: 13px; font-weight: 700;
+      margin-bottom: 32px;
+      border: 1px solid var(--pink-border);
+      position: relative;
+    }
+    .hero-badge::before { content: '✦'; font-size: 11px; }
+    .hero h1 {
+      font-size: clamp(42px, 6.5vw, 76px);
+      font-weight: 900;
+      line-height: 1.12;
+      letter-spacing: -2.5px;
+      margin-bottom: 24px;
+      color: var(--black);
+    }
+    .hero h1 em { font-style: normal; color: var(--pink); }
+    .hero p.sub {
+      font-size: clamp(16px, 1.8vw, 20px);
+      color: var(--gray-1);
+      line-height: 1.75;
+      max-width: 520px;
+      margin: 0 auto 48px;
+      font-weight: 400;
+    }
+    .hero-ctas {
+      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 80px;
+    }
+    .btn-primary {
+      background: var(--black); color: var(--white);
+      padding: 17px 38px; border-radius: 100px;
+      font-size: 16px; font-weight: 700; font-family: inherit;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: all .25s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { background: #333; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .btn-secondary {
+      background: var(--white); color: var(--black);
+      padding: 17px 38px; border-radius: 100px;
+      font-size: 16px; font-weight: 600; font-family: inherit;
+      text-decoration: none; border: 1.5px solid #e0e0e0; cursor: pointer;
+      transition: all .25s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-secondary:hover { border-color: var(--black); transform: translateY(-2px); }
+
+    /* Hero Phone Mockup */
+    .hero-phone-wrap {
+      position: relative; display: flex; justify-content: center;
+    }
+    .phone {
+      width: 260px;
+      background: var(--white);
+      border-radius: 40px;
+      border: 2px solid #e8e8e8;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+      overflow: hidden;
+      position: relative;
+    }
+    .phone-notch {
+      width: 80px; height: 24px;
+      background: var(--black); border-radius: 0 0 16px 16px;
+      margin: 0 auto 0;
+      position: relative; z-index: 2;
+    }
+    .phone-screen {
+      padding: 0;
+      background: #fafafa;
+      min-height: 480px;
+    }
+
+    /* ── App UI Inside Phone ── */
+    .app-header {
+      background: var(--white);
+      padding: 10px 14px 8px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .app-logo { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; }
+    .app-icons { display: flex; gap: 10px; }
+    .app-icon {
+      width: 24px; height: 24px;
+      background: #f0f0f0; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+    }
+    .app-tabs {
+      background: var(--white);
+      padding: 8px 10px;
+      display: flex; gap: 6px; overflow: hidden;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .app-tab {
+      padding: 5px 10px; border-radius: 100px;
+      font-size: 10px; font-weight: 600; white-space: nowrap;
+      background: #f0f0f0; color: #666;
+    }
+    .app-tab.active { background: var(--black); color: var(--white); }
+    .app-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px; padding: 8px;
+    }
+    .app-card {
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #eeeeee;
+    }
+    .app-card-thumb {
+      height: 90px; background: #f0f0f0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .app-card-thumb svg { opacity: 0.3; }
+    .app-card-body { padding: 6px 8px 8px; }
+    .source-label {
+      display: inline-block;
+      font-size: 9px; font-weight: 700;
+      margin-bottom: 4px; border-radius: 3px;
+    }
+    .source-insta { color: #E1306C; }
+    .source-youtube { color: var(--orange); }
+    .source-twitter { color: var(--blue); }
+    .source-web { color: #555; }
+    .app-card-line {
+      height: 6px; background: #eee; border-radius: 3px; margin-bottom: 4px;
+    }
+    .app-card-line.short { width: 60%; }
+    .app-tags { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px; }
+    .app-tag {
+      font-size: 8px; color: #666; background: #f5f5f5;
+      padding: 2px 5px; border-radius: 4px;
+    }
+
+    /* Bottom nav */
+    .app-bottom-nav {
+      background: var(--white);
+      padding: 8px 0 10px;
+      display: flex; justify-content: space-around; align-items: center;
+      border-top: 1px solid #f0f0f0;
+    }
+    .app-nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .app-nav-item span { font-size: 8px; color: #aaa; }
+    .app-nav-icon {
+      width: 20px; height: 20px; background: #eee; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .app-nav-icon.active { background: var(--black); }
+    .app-nav-center {
+      width: 36px; height: 36px; background: var(--black); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── PROBLEM ── */
+    .problem {
+      background: var(--black); color: var(--white);
+      padding: 120px 24px;
+    }
+    .problem .container { text-align: center; }
+    .section-label {
+      display: inline-block;
+      font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--pink);
+      margin-bottom: 20px;
+    }
+    .problem h2 {
+      font-size: clamp(32px, 4.5vw, 54px);
+      font-weight: 900; letter-spacing: -1.5px;
+      line-height: 1.2; margin-bottom: 20px;
+    }
+    .problem p.desc {
+      font-size: 18px; color: rgba(255,255,255,0.55);
+      line-height: 1.8; max-width: 560px; margin: 0 auto 64px;
+    }
+    .problem-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; max-width: 840px; margin: 0 auto 48px;
+    }
+    .problem-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px; text-align: left;
+    }
+    .problem-card-icon {
+      font-size: 28px; margin-bottom: 16px; display: block;
+    }
+    .problem-card h4 {
+      font-size: 16px; font-weight: 700; margin-bottom: 8px;
+    }
+    .problem-card p {
+      font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.6;
+    }
+    .problem-arrow {
+      font-size: 48px; color: var(--pink);
+      margin-top: 16px; display: block;
+    }
+    .problem-solution {
+      background: var(--pink);
+      border-radius: var(--radius-lg);
+      padding: 32px 40px;
+      max-width: 640px; margin: 0 auto;
+      font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+    }
+
+    /* ── FEATURES ── */
+    .features { padding: 40px 0; }
+    .feature-section {
+      padding: 100px 24px;
+      overflow: hidden;
+    }
+    .feature-section:nth-child(even) { background: #fafafa; }
+    .feature-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .feature-section:nth-child(even) .feature-inner { direction: rtl; }
+    .feature-section:nth-child(even) .feature-text,
+    .feature-section:nth-child(even) .feature-visual { direction: ltr; }
+
+    .feature-text {}
+    .feature-num {
+      font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--pink);
+      margin-bottom: 16px; display: block;
+    }
+    .feature-text h2 {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 900; letter-spacing: -1.2px;
+      line-height: 1.2; margin-bottom: 20px;
+    }
+    .feature-text p {
+      font-size: 17px; color: var(--gray-1);
+      line-height: 1.8; margin-bottom: 32px;
+    }
+    .feature-highlight {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--pink-light);
+      color: var(--pink);
+      padding: 10px 18px; border-radius: 100px;
+      font-size: 14px; font-weight: 600;
+    }
+
+    /* Feature Phones */
+    .feature-visual {
+      display: flex; justify-content: center; align-items: center;
+    }
+    .phone-lg {
+      width: 280px;
+      background: var(--white);
+      border-radius: 44px;
+      border: 2px solid #e0e0e0;
+      box-shadow: 0 32px 64px rgba(0,0,0,0.10);
+      overflow: hidden;
+    }
+    .phone-lg .phone-notch {
+      width: 88px; height: 26px;
+      background: var(--black); border-radius: 0 0 18px 18px;
+      margin: 0 auto;
+    }
+    .phone-screen-lg {
+      min-height: 500px;
+      background: #fafafa;
+    }
+
+    /* Share Sheet UI (Feature 1) */
+    .share-bg {
+      height: 200px;
+      background: linear-gradient(180deg, #222 0%, #111 100%);
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .share-bg-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.3);
+    }
+    .share-video-icon { font-size: 36px; opacity: 0.5; z-index: 1; }
+    .share-sheet {
+      background: var(--white);
+      border-radius: 20px 20px 0 0;
+      padding: 16px;
+    }
+    .share-handle {
+      width: 36px; height: 4px; background: #ddd; border-radius: 2px;
+      margin: 0 auto 14px;
+    }
+    .share-title-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+      padding-bottom: 12px; border-bottom: 1px solid #f0f0f0;
+    }
+    .share-title-icon {
+      width: 36px; height: 36px; background: #f0f0f0; border-radius: 8px;
+    }
+    .share-title-text { font-size: 11px; }
+    .share-title-text strong { display: block; font-size: 12px; font-weight: 700; }
+    .share-title-text span { color: #999; }
+    .share-apps {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 12px; margin-bottom: 14px;
+    }
+    .share-app {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .share-app-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900;
+    }
+    .share-app-icon.doit {
+      background: var(--black); color: var(--white);
+      font-size: 11px; font-weight: 900;
+    }
+    .share-app-icon.airdrop { background: #e0f0ff; color: #0a84ff; font-size: 18px; }
+    .share-app-icon.msg { background: #e3f8e3; color: #30d158; font-size: 18px; }
+    .share-app-icon.mail { background: #e3eeff; color: #0071e3; font-size: 18px; }
+    .share-app-label { font-size: 9px; color: #555; font-weight: 500; }
+    .share-actions {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 6px; margin-top: 6px;
+    }
+    .share-action {
+      background: #f5f5f5; border-radius: 10px;
+      padding: 10px 8px;
+      font-size: 10px; font-weight: 600; color: #333;
+      text-align: center;
+    }
+    .share-cancel {
+      background: #f5f5f5; border-radius: 12px;
+      padding: 12px; margin-top: 8px;
+      text-align: center; font-size: 13px; font-weight: 700; color: var(--blue);
+    }
+
+    /* Home Grid UI (Feature 2) */
+    .feat2-stats {
+      display: flex; gap: 6px; padding: 8px;
+    }
+    .feat2-stat {
+      flex: 1; background: var(--white);
+      border-radius: 10px; padding: 10px 8px; text-align: center;
+      border: 1px solid #eee;
+    }
+    .feat2-stat-num { font-size: 18px; font-weight: 900; color: var(--pink); }
+    .feat2-stat-label { font-size: 9px; color: #888; margin-top: 2px; }
+
+    /* Board UI (Feature 3) */
+    .board-header {
+      background: var(--white); padding: 12px 14px 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .board-header h3 { font-size: 17px; font-weight: 900; letter-spacing: -0.3px; }
+    .board-header-right {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--black); color: var(--white);
+      padding: 5px 10px; border-radius: 100px;
+      font-size: 9px; font-weight: 700; float: right;
+    }
+    .board-list { padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+    .board-item {
+      background: var(--white); border-radius: 14px;
+      border: 1px solid #eee; padding: 12px;
+    }
+    .board-item-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+    .board-item-title {
+      font-size: 13px; font-weight: 800; letter-spacing: -0.3px;
+    }
+    .board-item-badge {
+      background: var(--pink); color: var(--white);
+      font-size: 9px; font-weight: 700;
+      width: 16px; height: 16px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .board-avatars { display: flex; gap: -4px; margin-bottom: 8px; }
+    .avatar {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: var(--white);
+      border: 1.5px solid var(--white); margin-right: -5px;
+    }
+    .avatar.a { background: #60c5ff; }
+    .avatar.b { background: #ff9f43; }
+    .avatar.c { background: #a29bfe; }
+    .avatar.d { background: #55efc4; }
+    .avatar.e { background: #fd79a8; }
+    .avatar.me { background: var(--black); }
+    .avatar-count { font-size: 9px; color: #888; margin-left: 10px; align-self: center; }
+    .board-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .board-thumb { height: 40px; background: #f0f0f0; border-radius: 6px; }
+    .board-thumb.plus {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: #888; font-weight: 700;
+    }
+    .board-meta {
+      display: flex; justify-content: space-between;
+      font-size: 9px; color: #aaa; margin-top: 6px;
+    }
+    .board-meta .update { color: var(--pink); font-weight: 600; }
+
+    /* Explore UI (Feature 4) */
+    .explore-header {
+      background: var(--white); padding: 10px 12px 8px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .explore-search {
+      background: #f5f5f5; border-radius: 10px;
+      padding: 8px 12px; font-size: 11px; color: #999;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .explore-tabs {
+      padding: 8px 10px; display: flex; gap: 5px; overflow: hidden;
+      background: var(--white); border-bottom: 1px solid #f0f0f0;
+    }
+    .explore-tab {
+      padding: 5px 10px; border-radius: 100px;
+      font-size: 9px; font-weight: 700;
+      white-space: nowrap;
+      background: #f0f0f0; color: #555;
+    }
+    .explore-tab.active { background: var(--black); color: var(--white); }
+    .explore-cards { padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+    .explore-card {
+      background: var(--white); border-radius: 14px;
+      border: 1px solid #eee; padding: 12px;
+    }
+    .explore-card-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .explore-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: var(--white);
+    }
+    .explore-avatar.ji { background: #a29bfe; }
+    .explore-avatar.mj { background: #55efc4; color: var(--black); }
+    .explore-user { font-size: 11px; font-weight: 700; }
+    .explore-handle { font-size: 9px; color: #aaa; }
+    .explore-board-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+    .explore-board-tag {
+      font-size: 8px; color: #555; background: #f5f5f5;
+      padding: 3px 7px; border-radius: 5px; font-weight: 600;
+    }
+    .explore-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 8px; }
+    .explore-thumb { height: 44px; background: #f0f0f0; border-radius: 6px; }
+    .explore-thumb.more {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: #888; font-weight: 700;
+    }
+    .explore-footer {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .explore-repin { font-size: 9px; color: #888; }
+    .explore-btn {
+      background: var(--black); color: var(--white);
+      padding: 6px 12px; border-radius: 100px;
+      font-size: 9px; font-weight: 700;
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      padding: 140px 24px;
+      background: var(--black);
+      text-align: center; color: var(--white);
+    }
+    .cta-section h2 {
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 900; letter-spacing: -2px;
+      line-height: 1.15; margin-bottom: 20px;
+    }
+    .cta-section p {
+      font-size: 18px; color: rgba(255,255,255,0.5);
+      line-height: 1.7; margin-bottom: 48px;
+    }
+    .email-form {
+      display: flex; gap: 10px; max-width: 480px;
+      margin: 0 auto; flex-wrap: wrap; justify-content: center;
+    }
+    .email-input {
+      flex: 1; min-width: 240px;
+      padding: 16px 22px; border-radius: 100px;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: var(--white); font-size: 15px; font-family: inherit;
+      outline: none; transition: border .2s;
+    }
+    .email-input::placeholder { color: rgba(255,255,255,0.35); }
+    .email-input:focus { border-color: rgba(255,255,255,0.4); }
+    .btn-cta {
+      padding: 16px 30px; border-radius: 100px;
+      background: var(--pink); color: var(--white);
+      font-size: 15px; font-weight: 800; font-family: inherit;
+      border: none; cursor: pointer; white-space: nowrap;
+      transition: all .2s;
+    }
+    .btn-cta:hover { background: #ff1f46; transform: translateY(-1px); }
+    .cta-note {
+      margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.3);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0a0a0a; padding: 48px 24px;
+      text-align: center; color: rgba(255,255,255,0.3);
+    }
+    .footer-logo {
+      font-size: 24px; font-weight: 900; color: var(--white);
+      letter-spacing: -0.5px; margin-bottom: 16px; display: block;
+    }
+    .footer-desc { font-size: 14px; line-height: 1.7; max-width: 400px; margin: 0 auto 32px; }
+    .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+    .footer-link { font-size: 13px; color: rgba(255,255,255,0.3); text-decoration: none; transition: color .2s; }
+    .footer-link:hover { color: var(--white); }
+    .footer-copy { margin-top: 32px; font-size: 12px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 20px; }
+      .nav-link { display: none; }
+      .feature-inner {
+        grid-template-columns: 1fr;
+        gap: 48px; text-align: center;
+      }
+      .feature-section:nth-child(even) .feature-inner { direction: ltr; }
+      .feature-visual { order: -1; }
+      .problem-cards { grid-template-columns: 1fr; max-width: 400px; }
+    }
+    @media (max-width: 600px) {
+      .hero { padding: 120px 20px 60px; }
+      .feature-section { padding: 72px 20px; }
+      .cta-section { padding: 96px 20px; }
+      .email-input { min-width: 200px; }
+    }
+
+    /* Scroll fade-in animation */
+    .fade-up {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .fade-up.visible {
+      opacity: 1; transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">Doit</a>
+    <div class="nav-right">
+      <a href="#features" class="nav-link">기능</a>
+      <a href="#cta" class="btn-nav">얼리 액세스 신청 →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">얼리 액세스 모집 중</div>
+    <h1>저장했는데,<br><em>왜 못 찾겠지?</em></h1>
+    <p class="sub">인스타, 유튜브, X에서 본 좋은 정보들 — Doit 하나로 모으고, AI가 정리하고, 친구와 함께 쓰세요.</p>
+    <div class="hero-ctas">
+      <a href="#cta" class="btn-primary">얼리 액세스 신청하기 →</a>
+      <a href="#features" class="btn-secondary">기능 살펴보기</a>
+    </div>
+
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="container">
+      <span class="section-label">The Problem</span>
+      <h2>좋은 정보를 봤는데,<br>정작 필요할 땐...</h2>
+      <p class="desc">인스타 북마크, 카카오 나에게 보내기, 유튜브 저장 목록… 각기 다른 앱에 파편화된 정보들은 결국 쓰이지 못하고 사라집니다.</p>
+      <div class="problem-cards">
+        <div class="problem-card fade-up">
+          <span class="problem-card-icon">📱</span>
+          <h4>인스타 북마크 300개</h4>
+          <p>맛집, 여행, 패션이 뒤섞여 필요한 걸 찾을 수가 없어요</p>
+        </div>
+        <div class="problem-card fade-up" style="transition-delay:.1s">
+          <span class="problem-card-icon">💬</span>
+          <h4>카카오 나에게 보내기</h4>
+          <p>링크를 보냈는데 스크롤 올리기 귀찮아서 포기한 경험</p>
+        </div>
+        <div class="problem-card fade-up" style="transition-delay:.2s">
+          <span class="problem-card-icon">🎬</span>
+          <h4>유튜브 저장 영상 수백 개</h4>
+          <p>이미 본 건지 안 본 건지도 모르는 나만의 블랙홀</p>
+        </div>
+      </div>
+      <div class="problem-solution fade-up">
+        그래서 만들었어요 — 모든 콘텐츠를 한 곳에, 언제든 다시 꺼내 쓸 수 있게 🗂️
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <div id="features" class="features">
+
+    <!-- Feature 1: 저장 -->
+    <section class="feature-section">
+      <div class="feature-inner">
+        <div class="feature-text fade-up">
+          <span class="feature-num">Feature 01</span>
+          <h2>앱을 열 필요도 없어요</h2>
+          <p>보던 콘텐츠에서 <strong>공유 버튼 하나</strong>만 누르면 끝. 인스타 릴스도, 유튜브 영상도, 웹 링크도 — 어디서든 Doit으로 바로 저장돼요.</p>
+          <span class="feature-highlight">⚡ 3초면 저장 완료</span>
+        </div>
+        <div class="feature-visual fade-up" style="transition-delay:.15s">
+          <div class="phone-lg">
+            <div class="phone-notch"></div>
+            <div class="phone-screen-lg">
+              <div class="share-bg">
+                <div class="share-bg-overlay"></div>
+                <span class="share-video-icon">▶</span>
+              </div>
+              <div class="share-sheet">
+                <div class="share-handle"></div>
+                <div class="share-title-row">
+                  <div class="share-title-icon"></div>
+                  <div class="share-title-text">
+                    <strong>lunidrama님의 릴스</strong>
+                    <span>instagram.com</span>
+                  </div>
+                </div>
+                <div class="share-apps">
+                  <div class="share-app">
+                    <div class="share-app-icon doit">Doit</div>
+                    <span class="share-app-label">Doit</span>
+                  </div>
+                  <div class="share-app">
+                    <div class="share-app-icon airdrop">📡</div>
+                    <span class="share-app-label">AirDrop</span>
+                  </div>
+                  <div class="share-app">
+                    <div class="share-app-icon msg">💬</div>
+                    <span class="share-app-label">메시지</span>
+                  </div>
+                  <div class="share-app">
+                    <div class="share-app-icon mail">✉️</div>
+                    <span class="share-app-label">Mail</span>
+                  </div>
+                </div>
+                <div class="share-actions">
+                  <div class="share-action">🔗 복사</div>
+                  <div class="share-action">📌 메모에 추가</div>
+                </div>
+                <div class="share-cancel">취소</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature 2: AI 정리 -->
+    <section class="feature-section">
+      <div class="feature-inner">
+        <div class="feature-text fade-up">
+          <span class="feature-num">Feature 02</span>
+          <h2>폴더 만들 필요 없어요,<br>AI가 다 해줘요</h2>
+          <p>저장하면 AI가 내용을 분석해 <strong>카테고리와 태그를 자동으로 달아줘요.</strong> "홍대 맛집"이 필요할 땐 그냥 검색하면 바로 나와요.</p>
+          <span class="feature-highlight">🤖 저장과 동시에 자동 분류</span>
+        </div>
+        <div class="feature-visual fade-up" style="transition-delay:.15s">
+          <div class="phone-lg">
+            <div class="phone-notch"></div>
+            <div class="phone-screen-lg" style="background:#f5f5f5; overflow:hidden;">
+              <!-- Status bar -->
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 14px 2px;background:#fff;">
+                <span style="font-size:10px;font-weight:700;">9:41</span>
+                <div style="display:flex;gap:4px;align-items:center;">
+                  <span style="font-size:9px;font-weight:700;">3G</span>
+                  <svg width="14" height="10" viewBox="0 0 14 10"><rect x="0" y="5" width="3" height="5" rx="0.5" fill="#111"/><rect x="4" y="3" width="3" height="7" rx="0.5" fill="#111"/><rect x="8" y="1" width="3" height="9" rx="0.5" fill="#111"/><rect x="12" y="0" width="2" height="10" rx="0.5" fill="#ddd"/></svg>
+                  <svg width="18" height="10" viewBox="0 0 18 10"><rect x="0.5" y="0.5" width="15" height="9" rx="2.5" stroke="#111" stroke-width="1" fill="none"/><rect x="16" y="3" width="2" height="4" rx="1" fill="#111"/><rect x="2" y="2" width="10" height="6" rx="1.5" fill="#111"/></svg>
+                </div>
+              </div>
+              <!-- App header -->
+              <div style="background:#fff;padding:8px 14px 8px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">Doit</span>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </div>
+              </div>
+              <!-- Category tabs -->
+              <div style="background:#fff;padding:6px 10px 8px;display:flex;gap:5px;overflow:hidden;border-bottom:1px solid #f0f0f0;">
+                <span style="background:#111;color:#fff;padding:5px 11px;border-radius:100px;font-size:10px;font-weight:700;white-space:nowrap;">전체</span>
+                <span style="color:#555;padding:5px 10px;font-size:10px;font-weight:600;white-space:nowrap;">맛집</span>
+                <span style="color:#555;padding:5px 10px;font-size:10px;font-weight:600;white-space:nowrap;">여행</span>
+                <span style="color:#555;padding:5px 10px;font-size:10px;font-weight:600;white-space:nowrap;">패션</span>
+                <span style="color:#555;padding:5px 10px;font-size:10px;font-weight:600;white-space:nowrap;">운동</span>
+                <span style="color:#888;padding:5px 10px;font-size:10px;font-weight:600;white-space:nowrap;">+ 편집</span>
+              </div>
+              <!-- Sort row -->
+              <div style="background:#f5f5f5;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:10px;color:#666;font-weight:500;">저장 12개</span>
+                <div style="border:1px solid #ccc;border-radius:6px;padding:4px 9px;font-size:10px;font-weight:600;color:#333;background:#fff;display:flex;align-items:center;gap:3px;">최근순 <span style="font-size:8px;">▾</span></div>
+              </div>
+              <!-- Card grid -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 10px;">
+                <!-- Card 1: 인스타 -->
+                <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee;">
+                  <div style="height:86px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="6" width="14" height="16" rx="2" stroke="#bbb" stroke-width="1.5"/><path d="M8 14l4-4 4 4" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/><circle cx="15" cy="11" r="1.5" fill="#bbb"/></svg>
+                  </div>
+                  <div style="padding:6px 8px 8px;">
+                    <div style="font-size:10px;font-weight:800;color:#E1306C;margin-bottom:3px;">인스타</div>
+                    <div style="height:6px;background:#e8e8e8;border-radius:3px;margin-bottom:3px;"></div>
+                    <div style="height:6px;background:#e8e8e8;border-radius:3px;width:65%;margin-bottom:6px;"></div>
+                    <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                      <span style="font-size:8px;color:#555;border:1px solid #ddd;padding:2px 5px;border-radius:4px;">#홍대맛집</span>
+                      <span style="font-size:8px;color:#555;border:1px solid #ddd;padding:2px 5px;border-radius:4px;">#이탈리안</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card 2: 유튜브 -->
+                <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee;">
+                  <div style="height:86px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><polygon points="10,8 22,14 10,20" stroke="#bbb" stroke-width="1.5" stroke-linejoin="round" fill="none"/></svg>
+                  </div>
+                  <div style="padding:6px 8px 8px;">
+                    <div style="font-size:10px;font-weight:800;color:#FF6000;margin-bottom:3px;">유튜브</div>
+                    <div style="height:6px;background:#e8e8e8;border-radius:3px;margin-bottom:3px;"></div>
+                    <div style="height:6px;background:#e8e8e8;border-radius:3px;width:65%;margin-bottom:6px;"></div>
+                    <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                      <span style="font-size:8px;color:#555;border:1px solid #ddd;padding:2px 5px;border-radius:4px;">#홈트</span>
+                      <span style="font-size:8px;color:#555;border:1px solid #ddd;padding:2px 5px;border-radius:4px;">#운동루틴</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card 3: X 트위터 -->
+                <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee;">
+                  <div style="height:86px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="6" width="14" height="16" rx="2" stroke="#bbb" stroke-width="1.5"/><path d="M8 14l4-4 4 4" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/><circle cx="15" cy="11" r="1.5" fill="#bbb"/></svg>
+                  </div>
+                  <div style="padding:6px 8px 8px;">
+                    <div style="font-size:10px;font-weight:800;color:#1D9BF0;margin-bottom:3px;">X (트위터)</div>
+                    <div style="height:6px;background:#e8e8e8;border-radius:3px;margin-bottom:3px;"></div>
+                    <div style="height:6px;background:#e8e8e8;border-radius:3px;width:65%;margin-bottom:6px;"></div>
+                    <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                      <span style="font-size:8px;color:#555;border:1px solid #ddd;padding:2px 5px;border-radius:4px;">#IT뉴스</span>
+                      <span style="font-size:8px;color:#555;border:1px solid #ddd;padding:2px 5px;border-radius:4px;">#AI</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card 4: 웹링크 -->
+                <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee;">
+                  <div style="height:86px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M12 17a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07l-1.5 1.5" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/><path d="M16 11a5 5 0 0 0-7.07 0L6.1 13.83a5 5 0 0 0 7.07 7.07l1.5-1.5" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  </div>
+                  <div style="padding:6px 8px 8px;">
+                    <div style="font-size:10px;font-weight:800;color:#555;margin-bottom:3px;">웹링크</div>
+                    <div style="height:6px;background:#e8e8e8;border-radius:3px;margin-bottom:3px;"></div>
+                    <div style="height:6px;background:#e8e8e8;border-radius:3px;width:65%;margin-bottom:6px;"></div>
+                    <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                      <span style="font-size:8px;color:#555;border:1px solid #ddd;padding:2px 5px;border-radius:4px;">#도쿄</span>
+                      <span style="font-size:8px;color:#555;border:1px solid #ddd;padding:2px 5px;border-radius:4px;">#여행</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card 5 (partial): 인스타 -->
+                <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee;">
+                  <div style="height:60px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;">
+                    <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect x="4" y="6" width="14" height="16" rx="2" stroke="#bbb" stroke-width="1.5"/><path d="M8 14l4-4 4 4" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/><circle cx="15" cy="11" r="1.5" fill="#bbb"/></svg>
+                  </div>
+                  <div style="padding:5px 8px 6px;">
+                    <div style="font-size:10px;font-weight:800;color:#E1306C;margin-bottom:2px;">인스타</div>
+                    <div style="height:5px;background:#e8e8e8;border-radius:3px;"></div>
+                  </div>
+                </div>
+                <!-- Card 6 (partial): 유튜브 -->
+                <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee;">
+                  <div style="height:60px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;">
+                    <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><polygon points="10,8 22,14 10,20" stroke="#bbb" stroke-width="1.5" stroke-linejoin="round" fill="none"/></svg>
+                  </div>
+                  <div style="padding:5px 8px 6px;">
+                    <div style="font-size:10px;font-weight:800;color:#FF6000;margin-bottom:2px;">유튜브</div>
+                    <div style="height:5px;background:#e8e8e8;border-radius:3px;"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Bottom nav -->
+              <div style="background:#fff;padding:8px 0 10px;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #f0f0f0;margin-top:4px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#111" stroke="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                  <span style="font-size:8px;color:#111;font-weight:700;">홈</span>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+                  <span style="font-size:8px;color:#aaa;">탐색</span>
+                </div>
+                <div style="width:38px;height:38px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 2v12M2 8h12" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                  <span style="font-size:8px;color:#aaa;">보드</span>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                  <span style="font-size:8px;color:#aaa;">프로필</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature 3: 공유 보드 -->
+    <section class="feature-section">
+      <div class="feature-inner">
+        <div class="feature-text fade-up">
+          <span class="feature-num">Feature 03</span>
+          <h2>정보 공유,<br>이제 카톡 말고 Doit으로</h2>
+          <p>여행 준비, 맛집 탐방, 인테리어 리서치 — 목적에 맞는 보드를 만들고 <strong>친구를 초대하세요.</strong> 각자 콘텐츠를 추가하고, 이모지로 반응하고, 댓글로 이야기 나눠요.</p>
+          <span class="feature-highlight">👥 함께 만드는 정보 보드</span>
+        </div>
+        <div class="feature-visual fade-up" style="transition-delay:.15s">
+          <div class="phone-lg">
+            <div class="phone-notch"></div>
+            <div class="phone-screen-lg" style="background:#fafafa;">
+              <div class="board-header">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <h3>공유 보드</h3>
+                  <div style="background:#111;color:#fff;padding:5px 10px;border-radius:100px;font-size:9px;font-weight:700;">+ 새 보드</div>
+                </div>
+                <div style="font-size:10px;color:#888;margin-top:4px;">참여 중인 보드 3개</div>
+              </div>
+              <div class="board-list">
+                <div class="board-item">
+                  <div class="board-item-header">
+                    <span class="board-item-title">🗺️ 도쿄 여행 준비</span>
+                    <span class="board-item-badge">3</span>
+                  </div>
+                  <div style="display:flex;align-items:center;margin-bottom:8px;">
+                    <div class="avatar a">A</div>
+                    <div class="avatar b">B</div>
+                    <div class="avatar me">나</div>
+                    <span class="avatar-count">3명</span>
+                  </div>
+                  <div class="board-thumbs">
+                    <div class="board-thumb"></div>
+                    <div class="board-thumb"></div>
+                    <div class="board-thumb"></div>
+                    <div class="board-thumb plus">+12</div>
+                  </div>
+                  <div class="board-meta">
+                    <span>핀 15개</span>
+                    <span class="update">방금 전 업데이트</span>
+                  </div>
+                </div>
+                <div class="board-item">
+                  <div class="board-item-header">
+                    <span class="board-item-title">🍴 홍대 맛집 탐방</span>
+                  </div>
+                  <div style="display:flex;align-items:center;margin-bottom:8px;">
+                    <div class="avatar c">C</div>
+                    <div class="avatar d">D</div>
+                    <div class="avatar e">E</div>
+                    <div class="avatar me">나</div>
+                    <span class="avatar-count">4명</span>
+                  </div>
+                  <div class="board-thumbs">
+                    <div class="board-thumb"></div>
+                    <div class="board-thumb"></div>
+                    <div class="board-thumb"></div>
+                    <div class="board-thumb plus">+5</div>
+                  </div>
+                  <div class="board-meta">
+                    <span>핀 8개</span>
+                    <span>어제 업데이트</span>
+                  </div>
+                </div>
+                <div class="board-item">
+                  <div class="board-item-header">
+                    <span class="board-item-title">🛏️ 자취 인테리어</span>
+                  </div>
+                  <div style="display:flex;align-items:center;margin-bottom:8px;">
+                    <div class="avatar b">F</div>
+                    <div class="avatar me">나</div>
+                    <span class="avatar-count">2명</span>
+                  </div>
+                  <div class="board-meta" style="margin-top:4px;">
+                    <span>핀 3개</span>
+                    <span>3일 전</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature 4: 탐색 & 리핀 -->
+    <section class="feature-section">
+      <div class="feature-inner">
+        <div class="feature-text fade-up">
+          <span class="feature-num">Feature 04</span>
+          <h2>나만 보기엔 아까운 큐레이션,<br>세상에 공개하세요</h2>
+          <p>내 보드를 공개하면 <strong>태그로 발견되고,</strong> 마음에 드는 콘텐츠는 클릭 한 번에 내 보드로 가져올 수 있어요. 취향이 비슷한 사람들과 정보를 나눠요.</p>
+          <span class="feature-highlight">🌐 소셜 큐레이션 생태계</span>
+        </div>
+        <div class="feature-visual fade-up" style="transition-delay:.15s">
+          <div class="phone-lg">
+            <div class="phone-notch"></div>
+            <div class="phone-screen-lg" style="background:#fafafa;">
+              <div class="explore-header">
+                <div style="font-size:16px;font-weight:900;letter-spacing:-0.5px;margin-bottom:8px;">탐색</div>
+                <div class="explore-search">
+                  <span>🔍</span>
+                  <span>태그로 검색</span>
+                </div>
+              </div>
+              <div class="explore-tabs">
+                <div class="explore-tab active">전체</div>
+                <div class="explore-tab">#도쿄여행</div>
+                <div class="explore-tab">#맛집</div>
+                <div class="explore-tab">#홈트</div>
+                <div class="explore-tab">#패션</div>
+              </div>
+              <div class="explore-cards">
+                <div class="explore-card">
+                  <div class="explore-card-header">
+                    <div class="explore-avatar ji">지</div>
+                    <div>
+                      <div class="explore-user">지수의 도쿄 맛집 모음</div>
+                      <div class="explore-handle">@jisoo · 핀 23개</div>
+                    </div>
+                  </div>
+                  <div class="explore-board-tags">
+                    <span class="explore-board-tag">#도쿄여행</span>
+                    <span class="explore-board-tag">#라멘</span>
+                    <span class="explore-board-tag">#스시</span>
+                    <span class="explore-board-tag">#이자카야</span>
+                    <span class="explore-board-tag">#신주쿠</span>
+                  </div>
+                  <div class="explore-thumbs">
+                    <div class="explore-thumb"></div>
+                    <div class="explore-thumb"></div>
+                    <div class="explore-thumb"></div>
+                    <div class="explore-thumb more">+19</div>
+                  </div>
+                  <div class="explore-footer">
+                    <span class="explore-repin">↗ 리핀 47회</span>
+                    <div class="explore-btn">보드 보기</div>
+                  </div>
+                </div>
+                <div class="explore-card">
+                  <div class="explore-card-header">
+                    <div class="explore-avatar mj">민</div>
+                    <div>
+                      <div class="explore-user">민준의 홈트 루틴</div>
+                      <div class="explore-handle">@minjun · 핀 11개</div>
+                    </div>
+                  </div>
+                  <div class="explore-board-tags">
+                    <span class="explore-board-tag">#홈트</span>
+                    <span class="explore-board-tag">#운동루틴</span>
+                    <span class="explore-board-tag">#다이어트</span>
+                  </div>
+                  <div class="explore-thumbs">
+                    <div class="explore-thumb"></div>
+                    <div class="explore-thumb"></div>
+                    <div class="explore-thumb more">+9</div>
+                    <div class="explore-thumb" style="opacity:0;"></div>
+                  </div>
+                  <div class="explore-footer">
+                    <span class="explore-repin">↗ 리핀 12회</span>
+                    <div class="explore-btn">보드 보기</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /features -->
+
+  <!-- CTA -->
+  <section id="cta" class="cta-section">
+    <div class="container">
+      <span class="section-label" style="color:rgba(255,255,255,0.4);margin-bottom:20px;display:block;">Early Access</span>
+      <h2>먼저 써볼 준비<br>됐나요?</h2>
+      <p>지금 신청하면 출시 때 가장 먼저<br>초대장을 보내드려요.</p>
+      <form class="email-form" onsubmit="handleSubmit(event)">
+        <input
+          type="email"
+          class="email-input"
+          placeholder="이메일 주소를 입력하세요"
+          id="emailInput"
+          required
+        >
+        <button type="submit" class="btn-cta">얼리 액세스 신청 →</button>
+      </form>
+      <p class="cta-note" id="successMsg" style="display:none;color:#ff3b5c;font-weight:700;">✓ 신청 완료! 출시 소식을 가장 먼저 알려드릴게요 🎉</p>
+      <p class="cta-note">스팸은 절대 보내지 않아요. 출시 소식만 딱 한 번 드려요.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">Doit</span>
+    <p class="footer-desc">흩어진 정보를 한 곳에 모으고, 친구와 함께 편집하며, 세상과 공유하는 소셜 큐레이션 앱</p>
+    <div class="footer-links">
+      <a href="#" class="footer-link">서비스 소개</a>
+      <a href="#" class="footer-link">개인정보 처리방침</a>
+      <a href="#" class="footer-link">이용약관</a>
+      <a href="#" class="footer-link">문의하기</a>
+    </div>
+    <p class="footer-copy">© 2025 Doit. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Scroll fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Email form
+    function handleSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('emailInput').value;
+      if (email) {
+        document.getElementById('emailInput').style.display = 'none';
+        document.querySelector('.btn-cta').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+        // 여기에 실제 이메일 수집 API 연동 가능 (e.g., Mailchimp, ConvertKit, etc.)
+        console.log('Signup:', email);
+      }
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
