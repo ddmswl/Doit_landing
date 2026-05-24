@@ -14,8 +14,6 @@
     gtag('js', new Date());
     gtag('config', 'G-2J9XRG1F0B');
   </script>
-  <!-- Tally -->
-  <script src="https://tally.so/widgets/embed.js"></script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1085,21 +1083,16 @@
       <span class="section-label" style="color:rgba(255,255,255,0.4);margin-bottom:20px;display:block;">Early Access</span>
       <h2>먼저 써볼 준비<br>됐나요?</h2>
       <p>지금 신청하면 출시 때 가장 먼저<br>초대장을 보내드려요.</p>
-      <div class="email-form">
+      <form class="email-form" onsubmit="handleSubmit(event)">
         <input
           type="email"
           class="email-input"
           placeholder="이메일 주소를 입력하세요"
           id="emailInput"
+          required
         >
-        <button
-          class="btn-cta"
-          data-tally-open="VL4oky"
-          data-tally-emoji-text="👋"
-          data-tally-emoji-animation="wave"
-          onclick="trackSignup()"
-        >얼리 액세스 신청 →</button>
-      </div>
+        <button type="submit" class="btn-cta">얼리 액세스 신청 →</button>
+      </form>
       <p class="cta-note" id="successMsg" style="display:none;color:#ff3b5c;font-weight:700;">✓ 신청 완료! 출시 소식을 가장 먼저 알려드릴게요 🎉</p>
       <p class="cta-note">스팸은 절대 보내지 않아요. 출시 소식만 딱 한 번 드려요.</p>
     </div>
@@ -1130,21 +1123,20 @@
 
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // GA 이벤트: 신청 버튼 클릭
-    function trackSignup() {
-      gtag('event', 'sign_up_click', {
-        event_category: 'CTA',
-        event_label: 'Early Access Button'
-      });
+    // Email form → Tally로 이메일 전달
+    function handleSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('emailInput').value;
+      if (email) {
+        // GA 이벤트 기록
+        gtag('event', 'sign_up_click', {
+          event_category: 'CTA',
+          event_label: 'Early Access Form'
+        });
+        // 이메일 값을 Tally URL에 담아서 이동
+        window.location.href = 'https://tally.so/r/VL4oky?email=' + encodeURIComponent(email);
+      }
     }
-
-    // Nav CTA 클릭도 트래킹
-    document.querySelector('.btn-nav').addEventListener('click', function() {
-      gtag('event', 'sign_up_click', {
-        event_category: 'CTA',
-        event_label: 'Nav Button'
-      });
-    });
 
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(a => {
