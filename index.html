@@ -1117,6 +1117,7 @@
 
     // Tally 팝업 열기
     function openTally() {
+      // GA: 버튼 클릭 이벤트
       gtag('event', 'sign_up_click', {
         event_category: 'CTA',
         event_label: 'Early Access Form'
@@ -1127,6 +1128,18 @@
         window.open('https://tally.so/r/VL4oky', '_blank');
       }
     }
+
+    // Tally 폼 제출 완료 이벤트 추적
+    // → GA에서 "실제 신청 완료" 수를 잡기 위한 핵심 코드
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'tally-form-submitted') {
+        // GA: 전환 이벤트 (이게 핵심 전환 지표)
+        gtag('event', 'early_access_signup', {
+          event_category: 'conversion',
+          event_label: 'Tally Form Submitted'
+        });
+      }
+    });
 
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(a => {
